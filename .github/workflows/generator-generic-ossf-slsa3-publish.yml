@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المتحدة</title>
+    <style>
+        body {
+            background: linear-gradient(135deg, #add8e6, #e0f7fa);
+            font-family: 'Arial', sans-serif;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #0077b6;
+            text-shadow: 2px 2px 8px #fff;
+        }
+        .subtitle {
+            font-size: 22px;
+            color: #ff5722;
+            margin-top: -10px;
+            margin-bottom: 20px;
+            animation: glow 2s infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 10px #ffb74d, 0 0 20px #ffb74d; }
+            to { text-shadow: 0 0 20px #ff8a65, 0 0 30px #ff7043; }
+        }
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        button:hover {
+            transform: scale(1.05);
+            box-shadow: 2px 2px 15px rgba(0,0,0,0.3);
+        }
+        .btn-orange { background-color: #ff9800; }
+        .btn-green { background-color: #4caf50; }
+        .btn-blue { background-color: #00bcd4; }
+        .btn-pink { background-color: #f48fb1; }
+        form {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            display: inline-block;
+            text-align: right;
+            color: #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background: #f1f1f1;
+            color: #000;
+        }
+        .job-list, .about {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            color: #333;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .about img {
+            max-width: 250px;
+            border-radius: 12px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>المتحدة</h1>
+    <div class="subtitle">🇪🇬 أكبر منصة للعمل وإنشاء إعلان للعمل - الكل من أجل مصر 💪</div>
+
+    <button class="btn-orange" onclick="showCreateJobForm()">إنشاء إعلان للوظيفة</button>
+    <button class="btn-green" onclick="showJobList()">ابحث عن عمل</button>
+    <button class="btn-blue" onclick="showAbout()">حول / عنا</button>
+    <button class="btn-pink" onclick="contactUs()">اتصل بنا</button>
+
+    <div id="formContainer"></div>
+    <div id="jobList" class="job-list"></div>
+    <div id="aboutSection" class="about" style="display:none;">
+        <h2>حول / عنا</h2>
+        <img src="IMG_20250707_082555[1].jpg" alt="المتحدة">
+        <p>🌟 <strong>المدير التنفيذي:</strong> محمود محمد محمد مرسي جاد</p>
+        <p>📞 <strong>رقم الهاتف:</strong> 01118521703</p>
+        <hr>
+        <p>🌟 <strong>السكرتير:</strong> عبدالعال جدامي عبد العال</p>
+        <p>📞 <strong>رقم الهاتف:</strong> 01117657745</p>
+    </div>
+
+    <script>
+        let jobs = [];
+
+        function showCreateJobForm() {
+            document.getElementById('aboutSection').style.display = 'none';
+            document.getElementById('formContainer').innerHTML = `
+                <form onsubmit="createJob(event)">
+                    <h2>إنشاء إعلان وظيفة</h2>
+                    <label>اسم الشركة</label>
+                    <input type="text" id="company" required>
+                    <label>نوع الشغل</label>
+                    <input type="text" id="jobType" required>
+                    <label>المكان بالتحديد</label>
+                    <input type="text" id="location" required>
+                    <label>المرتب (جنيه)</label>
+                    <input type="number" id="salary" required>
+                    <label>وقت الاستراحة (اختر ساعة أو دقيقة)</label>
+                    <input type="text" id="breakTime" required>
+                    <label>عدد ساعات العمل (ساعة)</label>
+                    <input type="number" id="workHours" required>
+                    <label>السن المطلوب</label>
+                    <input type="number" id="minAge" required>
+                    <label>رقم هاتف صاحب الإعلان (+20)</label>
+                    <input type="text" id="ownerPhone" required pattern="(010|011|012|015)[0-9]{8}">
+                    <button class="btn-orange" type="submit">إرسال</button>
+                </form>
+            `;
+        }
+
+        function createJob(event) {
+            event.preventDefault();
+            const job = {
+                company: document.getElementById('company').value,
+                jobType: document.getElementById('jobType').value,
+                location: document.getElementById('location').value,
+                salary: document.getElementById('salary').value + ' جنيه',
+                breakTime: document.getElementById('breakTime').value,
+                workHours: document.getElementById('workHours').value + ' ساعة',
+                minAge: parseInt(document.getElementById('minAge').value),
+                ownerPhone: '+20' + document.getElementById('ownerPhone').value
+            };
+            jobs.push(job);
+            alert('تم إنشاء الإعلان وإرساله عبر واتساب');
+            window.open(`https://wa.me/201118521703?text=إعلان%20وظيفة:%0Aاسم%20الشركة:%20${job.company}%0Aنوع%20الشغل:%20${job.jobType}%0Aالمكان:%20${job.location}%0Aالمرتب:%20${job.salary}%0Aوقت%20الاستراحة:%20${job.breakTime}%0Aعدد%20ساعات%20العمل:%20${job.workHours}%0Aالسن%20المطلوب:%20${job.minAge}%0Aرقم%20صاحب%20الإعلان:%20${job.ownerPhone}`,'_blank');
+            document.getElementById('formContainer').innerHTML = '';
+        }
+
+        function showJobList() {
+            document.getElementById('aboutSection').style.display = 'none';
+            let html = '<h2>الوظائف المتاحة</h2>';
+            jobs.forEach((job, index) => {
+                html += `
+                    <div class="job">
+                        <strong>${job.company}</strong> - ${job.jobType}<br>
+                        المكان: ${job.location}<br>
+                        المرتب: ${job.salary}<br>
+                        السن المطلوب: ${job.minAge}+<br>
+                        <button class="btn-green" onclick="applyJob(${index})">التقديم على الوظيفة</button>
+                        <button class="btn-orange" onclick="deleteJob(${index})">حذف</button>
+                        <button class="btn-pink" onclick="renewJob(${index})">تجديد</button>
+                    </div>
+                `;
+            });
+            document.getElementById('jobList').innerHTML = html;
+        }
+
+        function applyJob(index) {
+            const job = jobs[index];
+            let name = prompt('ادخل اسمك:');
+            let phone = prompt('ادخل رقم الهاتف (+20):').replace('+20', '');
+            let age = parseInt(prompt('ادخل سنك:'));
+
+            if (age < job.minAge) {
+                alert(`يجب أن يكون سنك ${job.minAge} سنة أو أكثر.`);
+                return;
+            }
+
+            alert('تم التقديم على الوظيفة وإرسال بياناتك عبر واتساب');
+            window.open(`https://wa.me/201118521703?text=تقديم%20على%20وظيفة:%0Aالوظيفة:%20${job.company} - ${job.jobType}%0Aالمكان:%20${job.location}%0A--%0Aبيانات%20المتقدم:%0Aاسم:%20${name}%0Aرقم:%20+20${phone}%0Aالسن:%20${age}`,'_blank');
+        }
+
+        function deleteJob(index) {
+            const phone = prompt('ادخل رقم الهاتف الذي أنشأ الإعلان (+20):').replace('+20', '');
+            if ('+20' + phone === jobs[index].ownerPhone) {
+                if (confirm('هل تريد حذف هذه الوظيفة؟')) {
+                    jobs.splice(index, 1);
+                    showJobList();
+                    alert('تم حذف الإعلان بنجاح ✅');
+                }
+            } else {
+                alert('❌ الرقم غير صحيح، لا يمكنك حذف الإعلان');
+            }
+        }
+
+        function renewJob(index) {
+            alert('تم تجديد الوظيفة بنجاح');
+            showJobList();
+        }
+
+        function showAbout() {
+            document.getElementById('formContainer').innerHTML = '';
+            document.getElementById('jobList').innerHTML = '';
+            document.getElementById('aboutSection').style.display = 'block';
+        }
+
+        function contactUs() {
+            window.open('https://wa.me/201118521703', '_blank');
+        }
+    </script>
+</body>
+</html>
